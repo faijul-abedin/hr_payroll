@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Department;
 use App\Models\Designation;
 use App\Models\Employee;
+use App\Models\Setup;
 use App\Models\Shift;
 use Illuminate\Http\Request;
 use App\Models\User;
 use File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Rats\Zkteco\Lib\ZKTeco;
 
 class EmployeeController extends Controller
 {
@@ -54,7 +56,7 @@ class EmployeeController extends Controller
     {
         $request->validate(
             [
-                'employee_name'=>'required',
+                'employee_name'=>'required|max:20',
                 'email'=>'required',
                 'password'=>'required',
                 'birth'=>'required',
@@ -123,7 +125,6 @@ class EmployeeController extends Controller
         $employee->ending = $request->leave_date;
         $employee->comment = $request->comment;
 
-
         // $employee->manager_id=$request->manager_id;
         // $employee->ending=$request->leave_date;
         $employee->status = $request->status;
@@ -137,6 +138,23 @@ class EmployeeController extends Controller
         }
 
         $employee->save();
+        $employee->uid = $employee->id;
+        $employee->userid = $employee->id;
+        $employee->save();
+
+        $setup = Setup::first();
+        $zk = new ZKTeco($setup->dns, $setup->port);
+        if ($zk->connect()){
+            $uid = $employee->uid;
+            $userid = $employee->userid;
+            $name = $employee->name;
+            $password = 0000;
+            $role = 0;
+            $cardno = 0;
+            $set = $zk->setUser($uid, $userid, $name, $password, $role, $cardno);
+            $zk->testVoice();
+        }
+
         $notification = array(
             'message' => 'Employee Added Successfully',
             'alert-type' => 'success'

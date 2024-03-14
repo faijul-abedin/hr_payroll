@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\Bonus\BonusController;
 
 use App\Http\Controllers\Admin\Customer\CustomerController;
 use App\Http\Controllers\Admin\Employee\EmployeeProfileController;
+use App\Http\Controllers\Admin\Fingerprint\FingerprintController;
 use App\Http\Controllers\Admin\Notice\NoticeController;
 use App\Http\Controllers\Admin\Payment\PaymentController;
 use App\Http\Controllers\Admin\Reward\RewardController;
@@ -316,4 +317,12 @@ Route::controller(GroupController::class)->group(function () {
     Route::get('/mg-school', 'schoolIndex')->name('schools');
     Route::get('/bd-electronic', 'electronicIndex')->name('electronics');
     Route::get('/tipson-electric', 'tipsonIndex')->name('tipsons');
+});
+
+Route::controller(FingerprintController::class)->group(function () {
+    Route::get('/setup/index', 'setupIndex')->name('setup.index');
+    Route::get('/zkteco/index', 'zktecoIndex')->name('zkteco.index');
+    Route::get('/inout/index', 'inoutIndex')->name('inout.index');
+    Route::post('/setup/update', 'setupUpdate')->name('setup.update');
+    Route::get('/get/attendance', 'getAttendance')->name('get.attendance');
 });

@@ -42,6 +42,10 @@ return new class extends Migration
             $table->string('comment')->nullable();
             $table->string('status')->nullable();
             $table->string('password')->nullable();
+            //Finger Configuration
+            $table->integer('uid')->nullable();
+            $table->integer('userid')->nullable();
+            // $table->string('cardno')->nullable();
             $table->timestamps();
         });
     }

@@ -518,11 +518,19 @@
             </ul>
             </li> -->
 
-            <li class="nav-item mb-3">
+            <li class="nav-item">
               <a href="{{ route('notice.index') }}" class="nav-link">
-                  <i class="nav-icon fas fa-gear"></i>
+                <i class="fa-solid fa-clipboard nav-icon"></i>
                   <p>
                       Notice
+                  </p>
+              </a>
+            </li>
+            <li class="nav-item mb-3">
+              <a href="{{ route('setup.index') }}" class="nav-link">
+                  <i class="nav-icon fas fa-gear"></i>
+                  <p>
+                      Finger Machine Setup
                   </p>
               </a>
             </li>

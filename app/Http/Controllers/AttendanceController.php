@@ -93,14 +93,65 @@ class AttendanceController extends Controller
 
         return view('admin.attendance.attendancereport', compact('attendance'));
     }
+    // public function showAllAttendance()
+    // {
+    //     if (is_null($this->user) || !$this->user->can('Attendance.all_report')) {
+    //         abort('403', 'Unauthorized access');
+    //     }
+    //     $attendance = Attendance::orderBy('created_at', 'asc')->get();
+
+    //     return view('admin.attendance.all_attendance_report', compact('attendance'));
+    // }
     public function showAllAttendance()
     {
         if (is_null($this->user) || !$this->user->can('Attendance.all_report')) {
             abort('403', 'Unauthorized access');
         }
-        $attendance = Attendance::orderBy('created_at', 'asc')->get();
 
-        return view('admin.attendance.all_attendance_report', compact('attendance'));
+        $employees = Employee::all();
+        $attendancePairs = [];
+        foreach ($employees as $user) {
+            $attendance = Attendance::where('employee_id', $user->id)
+                ->orderBy('timestamp')
+                ->get()
+                ->groupBy(function ($item) {
+                    return Carbon::parse($item->timestamp)->format('Y-m-d');
+                });
+    
+            foreach ($attendance as $date => $records) {
+                $entry = null;
+                $exit = null;
+                foreach ($records as $record) {
+                    if ($record->type == 0) {
+                        $entry = $record;
+                    } elseif ($record->type == 1) {
+                        $exit = $record;
+                    }
+    
+                    if ($entry && $exit) {
+                        $entryTime = Carbon::parse($entry->timestamp);
+                        $exitTime = Carbon::parse($exit->timestamp);
+                        // $hoursWorked = $entryTime->diffInHours($exitTime);
+                        $diff = $entryTime->diff($exitTime);
+                        $hoursWorked = $diff->format('%h hours %i minutes');
+    
+                        $attendancePairs[] = [
+                            'employee' => $user->name,
+                            'date' => $date,
+                            'entry' => $entryTime,
+                            'exit' => $exitTime,
+                            'hours_worked' => $hoursWorked
+                        ];
+    
+                        // Reset entry and exit for the next pair
+                        $entry = null;
+                        $exit = null;
+                    }
+                }
+            }
+        }
+    
+        return view('admin.attendance.all_attendance_report', compact('attendancePairs'));
     }
 
     public function updateStatus(Request $request)
