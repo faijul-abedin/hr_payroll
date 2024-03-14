@@ -25,20 +25,18 @@
                 <h3 class="card-title">Attendance Report</h3>
 
                 <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                        <i class="fas fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove">
-                        <i class="fas fa-times"></i>
-                    </button>
+                    <a href="{{ route('get.attendance') }}" class="btn btn-sm btn-info">Get Attendance</a>
                 </div>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
-                <table id="example2" class="table table-bordered table-hover mt-3">
+                {{-- <table id="example2" class="table table-bordered table-hover mt-3">
                     <thead>
                         <tr>
                             <th>Date</th>
+                            <th>Time</th>
+                            <th>Type</th>
+                            <th>Hours</th>
                             <th>Employee ID</th>
                             <th>Employee Name</th>
                             <th>Department</th>
@@ -53,6 +51,19 @@
                             <td>
                                 {{ \Carbon\Carbon::parse($record->created_at)->format('Y-m-d') }}
                             </td>
+                            <td>
+                                {{ \Carbon\Carbon::parse($record->timestamp)->format('H:m:s') }}
+                            </td>
+                            <td>
+                                @if ($record->type == 0)
+                                    Entry
+                                @elseif ($record->type == 1)
+                                    Exit
+                                @else
+                                   <span class="text-red">Wrong</span> 
+                                @endif
+                            </td>
+                            <td></td>
                             <td>{{ $record->attendance_employee->employee_id }}</td>
                             <td>{{ $record->attendance_employee->name }}</td>
                             <td>{{ $record->attendance_employee->Department->name }}</td>
@@ -75,6 +86,30 @@
                             @include('admin.attendance.islate_modal')
                         </tr>
                         @endforeach
+                    </tbody>
+                </table> --}}
+
+
+                <table id="example2" class="table table-bordered table-hover mt-3">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Employee</th>
+                            <th>Entry Time</th>
+                            <th>Exit Time</th>
+                            <th>Working Hours</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($attendancePairs as $attendancePair)
+                        <tr>
+                            <td>{{ $attendancePair['date'] }}</td>
+                            <td>{{ $attendancePair['employee'] }}</td>
+                            <td>{{ $attendancePair['entry']->format('H:i:s') }}</td>
+                            <td>{{ $attendancePair['exit']->format('H:i:s') }}</td>
+                            <td>{{ $attendancePair['hours_worked'] }}</td>
+                        </tr>
+                    @endforeach
                     </tbody>
                 </table>
                 <!-- /.row -->

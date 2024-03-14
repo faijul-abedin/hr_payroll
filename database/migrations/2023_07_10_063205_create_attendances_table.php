@@ -15,9 +15,15 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Employee::class);
-            $table->string('is_present');
-            $table->string('is_late');
+            $table->foreignIdFor(Employee::class)->nullable(); // id in machine
+
+            $table->integer('uid')->nullable();
+            $table->integer('state')->nullable();
+            $table->timestamp('timestamp')->nullable();
+            $table->integer('type')->nullable();
+
+            $table->string('is_present')->nullable();
+            $table->string('is_late')->nullable();
             $table->timestamps();
         });
     }
