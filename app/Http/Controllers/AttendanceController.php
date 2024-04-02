@@ -115,7 +115,7 @@ class AttendanceController extends Controller
                 ->orderBy('timestamp')
                 ->get()
                 ->groupBy(function ($item) {
-                    return Carbon::parse($item->timestamp)->format('Y-m-d');
+                    return Carbon::parse($item->timestamp)->format('j F Y');
                 });
     
             foreach ($attendance as $date => $records) {
