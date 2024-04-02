@@ -105,8 +105,8 @@
                         <tr>
                             <td>{{ $attendancePair['date'] }}</td>
                             <td>{{ $attendancePair['employee'] }}</td>
-                            <td>{{ $attendancePair['entry']->format('H:i:s') }}</td>
-                            <td>{{ $attendancePair['exit']->format('H:i:s') }}</td>
+                            <td>{{ $attendancePair['entry']->format('H:i A') }}</td>
+                            <td>{{ $attendancePair['exit']->format('H:i A') }}</td>
                             <td>{{ $attendancePair['hours_worked'] }}</td>
                         </tr>
                     @endforeach
